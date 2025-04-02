@@ -3,6 +3,7 @@
 Example applications for Flask beginners.
 stam
 stam2
+stam3
 
 ## Installation
 
