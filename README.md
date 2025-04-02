@@ -5,6 +5,7 @@ stam
 stam2
 stam3
 stam4
+stam5
 
 ## Installation
 
