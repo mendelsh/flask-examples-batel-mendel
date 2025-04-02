@@ -1,6 +1,7 @@
 # Flask Examples
 
 Example applications for Flask beginners.
+stam
 
 ## Installation
 
