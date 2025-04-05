@@ -1,0 +1,51 @@
+
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf 
+    networks:
+      - rabbit_net
+
+  jenkins:
+    image: jenkins/jenkins:latest
+    container_name: jenkins-container
+    restart: always
+    ports:
+      - "8080:8080" 
+      - "50000:50000"
+    volumes:
+      - ./jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    networks:
+      - rabbit_net
+  
+  jenkins-agent:
+    image: jenkins/ssh-agent:jdk11
+    container_name: jenkins-agent
+    restart: always
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCrGlYY0i+JEGXi8QF8ezAPttiv8u+HZ3p76oVptV5c2XdrUTSHO853vOTN3IL+5p9P8F9Cs9em5BBhxkf0wmXRDufPbfcpkCs86BnTUV7niw8tP/ovsmAw1YSiW5j7K/rTTWHM209sRi7LerUIax0fmL5xMHiddWRZBNW4PAwiVAp6Su0fWWTNKdLTVo5b58j/VJFVsujoL0nqCYb8nS6z0dB5Abprv5mV3KXPTvsYgZ4wL1RO8BZ81X4oYJTopP9c59H7BA40sI4HWNfwrSvJ6n6vp0T9y8M43iJzMZiFd+x5RYcaY27gtq13TFK+zXUfMHuou1W4NbCXnZkXIuXXLuHMhmqBNvxWRgFotReVf2amiXt2UywS9bXT/fHLm0bX3DyvRHVX9xy909ENJaY71Mb1YEIgCXAoi21bg6KA9n+NzDNVOr1l0TZAdmaFZwJ3aLyN3rf/F5Wl8m8A2I2caeAj1axqe2z8fPylfy+QUlslTG+hCdyirqO+AQAztAw8Q6Kr+WaLdUTuZ+m8HKna9HE258egdNezEESNUovpwQWlevkIW0/wT8p58uHQXwjmpyF97zniOE26AoA2vd0OyP4VXXaMpFP8f52kyiGtrQoHrbCoh++ONBSfUdW87p4lI+0olfKynQj81xt1LoQM0He2mEFQpnm+Gen2LpCp4w== mendel@mendel-Latitude-7420
+    depends_on:
+      - jenkins
+  
+  registry:
+    image: registry:2
+    container_name: registry-container
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./registry-data:/var/lib/registry
+    networks:
+      - rabbit_net
+
+networks:
+  rabbit_net: 
+    external: true
